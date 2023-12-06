@@ -1,0 +1,73 @@
+﻿body {
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center; /* Thêm đoạn này để canh giữa theo chiều ngang */
+}
+
+.button-container {
+    flex: 1;
+}
+
+/* Xoá các thuộc tính chiều cao và width trong .true và .false */
+.true, .false {
+    width: auto;
+    height: auto;
+}
+
+
+
+
+/* CSS cho nút điểm danh */
+.switch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Đảm bảo chiều cao của nút bằng chiều cao của ô dữ liệu */
+}
+
+.container .button-container .true {
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    width: 50%;
+    height: 100%;
+    color: dodgerblue;
+    border: solid 1px dodgerblue;
+    border-right: none;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.container .button-container .false {
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    width: 50%;
+    height: 100%;
+    color: gray;
+    border: solid 1px gray;
+    border-left: none;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.container .button-container .true.actived {
+    color: white;
+    border: solid 1px dodgerblue;
+    background-color: dodgerblue;
+}
+
+.container .button-container .false.actived {
+    color: white;
+    border: solid 1px gray;
+    background-color: gray;
+}
+
+.container .button-container i {
+    font-size: 25px;
+}

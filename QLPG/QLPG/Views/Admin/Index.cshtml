@@ -1,0 +1,558 @@
+﻿@model QLPG.ViewModel.MultipleData
+@{
+    ViewBag.Title = "Admin Page";
+    Layout = null;
+
+}
+<!doctype html>
+<html class="no-js" lang="">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Website Gym Fish</title>
+    <meta name="description" content="Website Gym Fish">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="~/assets/img/favicon.ico" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link href="~/css/Admin.css" rel="stylesheet" />
+    <link href="~/css/Admin1.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
+
+    <style>
+
+        #flotLine5 {
+            height: 105px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- Left Panel -->
+    <aside id="left-panel" class="left-panel">
+        <nav class="navbar navbar-expand-sm navbar-default">
+            <div id="main-menu" class="main-menu collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="/Admin/Index"><i class="menu-icon fa fa-laptop"></i>Dashboard </a>
+                    </li>
+                    <!-- /.menu-title -->
+                    <li class="menu-title">Management</li>
+
+                    @if (Session["Role"] != null && Session["Role"].ToString().Equals("Admin"))
+                    {
+                        @*// Hiển thị tất cả chức năng cho quyền Admin*@
+                        <li><a href="/ThanhVien/Thanhvien"> <i class="menu-icon far fa fa-bars"></i>Thành viên</a> </li>
+                        <li><a href="/HoiVien/HoiVien"> <i class="menu-icon fa fa-book fa-fw"></i>Hội viên</a></li>
+                        <li class="menu-item-has-children dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"> <i class="menu-icon fa fa-heart"></i>Quản Lý gói Tập</a>
+                            <ul class="sub-menu children dropdown-menu">
+                                <li><a href="/GoiTap/Goitap"> <i></i>Gói tập</a></li>
+                                <li><a href="/DangkyGoiTap/DKGT"> <i></i>Đăng Ký Gói Tập</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="/User/NguoiDung"> <i class="menu-icon fa fa-cloud"></i>Người Dùng</a></li>
+                    }
+                    else if (Session["Role"] != null && Session["Role"].ToString().Equals("User"))
+                    {
+                        // Chỉ hiển thị các chức năng cần thiết cho quyền User
+                        <li><a href="/ThanhVien/Thanhvien"> <i class="menu-icon far fa fa-bars"></i>Thành viên</a> </li>
+                        <li><a href="/HoiVien/HoiVien"> <i class="menu-icon fa fa-book fa-fw"></i>Hội viên</a></li>
+                        <li class="menu-item-has-children dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"> <i class="menu-icon fa fa-heart"></i>Quản Lý gói Tập</a>
+                            <ul class="sub-menu children dropdown-menu">
+                                <li><a href="/GoiTap/Goitap"> <i></i>Gói tập</a></li>
+                                <li><a href="/DK_GoiTap/DK_GoiTap"> <i></i>Đăng Ký Gói Tập</a></li>
+                            </ul>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+        </nav>
+    </aside>
+    <!-- /#left-panel -->
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+        <!-- Header-->
+        <header id="header" class="header">
+            <div class="top-left">
+                <div class="navbar-header">
+                    <ul class=" navbar-nav">
+                        <li>
+                            <a><i style='font-size:26px' class="menu-icon fa fa-home fa-fw"></i> Admin @Session["username"].ToString()  <span style='font-size:12px' color class="ti-heart"></span>  </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="top-right">
+                <div class="header-menu">
+                    <div class="header-left">
+                        <button class="search-trigger"><i class="fa fa-search"></i></button>
+                        <div class="form-inline">
+                            <form class="search-form">
+                                <input class="form-control mr-sm-2" type="text" placeholder="Search ..." id="Search" aria-label="Search">
+                                <button class="search-close" type="submit"><i class="fa fa-close"></i></button>
+                            </form>
+                        </div>
+                        <!---Thông báo--->
+                        <div class="dropdown for-notification">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-bell"></i>
+                                @if (Model.NewNotificationCount > 0)
+                                {
+                                    <span class="count bg-danger">@Model.NewNotificationCount</span>
+                                }
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="notification">
+                                <p class="red">You have @Model.NewNotificationCount Notification(s)</p>
+                                @if (!string.IsNullOrEmpty(Model.AdminNotification))
+                                {
+                                    <a class="dropdown-item media" href="#">
+                                        <i class="fa fa-check"></i>
+                                        <p>@Model.AdminNotification</p>
+                                    </a>
+                                }
+                                <!-- Hiển thị thông báo từ ViewBag nếu có -->
+                                @if (!string.IsNullOrEmpty(ViewBag.RegistrationNotification))
+                                {
+                                    <a class="dropdown-item media" href="#">
+                                        <i class="fa fa-check"></i>
+                                        <p>@ViewBag.RegistrationNotification</p>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+
+                        <!---Message---->
+                        <div class="dropdown for-message">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="message" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-envelope"></i>
+                                <span class="count bg-primary">4</span>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="message">
+                                <p class="red">You have 4 Mails</p>
+                                <a class="dropdown-item media" href="#">
+                                    <span class="photo media-left"><img alt="avatar" src="~/assets/img/team/1.jpg"></span>
+                                    <div class="message media-body">
+                                        <span class="name float-left">Jonathan Smith</span>
+                                        <span class="time float-right">Just now</span>
+                                        <p>Hello, This is a special gift for guys !</p>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item media" href="#">
+                                    <span class="photo media-left"><img alt="avatar" src="~/assets/img/team/2.jpg"></span>
+                                    <div class="message media-body">
+                                        <span class="name float-left">Jack Sanders</span>
+                                        <span class="time float-right">5 minutes ago</span>
+                                        <p>Have a nice day.</p>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item media" href="#">
+                                    <span class="photo media-left"><img alt="avatar" src="~/assets/img/logos/;000.jpg"></span>
+                                    <div class="message media-body">
+                                        <span class="name float-left">Diệp Lạc</span>
+                                        <span class="time float-right">10 minutes ago</span>
+                                        <p>Xin chào, tôi cần liên hệ lễ tân để đăng ký hội viên</p>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item media" href="#">
+                                    <span class="photo media-left"><img alt="avatar" src="~/assets/img/team/Chi anh.jpg"></span>
+                                    <div class="message media-body">
+                                        <span class="name float-left">Chi Anh</span>
+                                        <span class="time float-right">15 minutes ago</span>
+                                        <p>Báo cáo định kỳ cuối tháng 12/2023 !!</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-area dropdown float-right">
+                        <a href="#" class="dropdown-toggle active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img class="user-avatar rounded-circle" src="~/assets/img/logos/;000.jpg" alt="User Avatar">
+                        </a>
+                        <div class="user-menu dropdown-menu">
+                            <div class="dropdown-divider"></div>
+                            <a class="nav-link" href="@Url.Action("DangXuat","Account")">
+                                <i class="fa fa- user"></i>
+                                Đăng Xuất
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Widgets -->
+        <div class="content">
+            <!-- Animated -->
+            <div class="animated fadeIn">
+                <!-- Phần 1 -->
+                <div class="row">
+
+                    @{
+                        var tongDoanhThu = Model.chiTietDK_
+                         .Where(ct => ct.NgayBatDau.HasValue && ct.NgayBatDau.Value.Year == 2023 && ct.ThanhTien.HasValue)
+                         .Sum(ct => ct.ThanhTien) ?? 0;
+                    }
+                    <div class="col-lg-5 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-1">
+                                        <i class="pe-7s-cash"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text">
+                                                <span> @tongDoanhThu.ToString("#,##0") </span>
+                                                <span>VND</span>
+                                                <div class="stat-heading">Doanh thu năm 2023</div>
+                                            </div>
+                                            <div class="stat-heading"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-3">
+                                        <i class="pe-7s-browser"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text"><span class="count">@Model.vien.Count(tv => tv.NgayTao.HasValue && tv.NgayTao.Value.Date == DateTime.Now.Date)</span></div>
+                                            <div class="stat-heading">Đăng ký tập thử ( KH )</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-4">
+                                        <i class="pe-7s-users"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text"><span class="count">@Model.hoiViens.Count()</span></div>
+                                            <div class="stat-heading">Số lượng hội viên</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Phần 2 -->
+                <div class="row">
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-four">
+                                    <div class="stat-icon dib">
+                                        <i class="ti-user text-muted"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-heading">Số Lượng Thành Viên</div>
+                                            <div class="stat-text">Tổng : @Model.vien.Count()</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @{
+                        // Lấy ngày hiện tại
+                        DateTime currentDate = DateTime.Now;
+
+                        // Truy vấn LINQ để lấy số lượng hội viên có gói tập hết hạn gần nhất
+                        var numberOfExpiredMembers = Model.chiTietDK_
+                            .Where(ct => ct.id_HV.HasValue && ct.NgayKetThuc.HasValue && ct.NgayKetThuc.Value < currentDate)
+                            .GroupBy(ct => ct.id_HV)
+                            .Count();
+                    }
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-four">
+                                    <div class="stat-icon dib">
+                                        <i class="ti-pulse text-muted"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-heading">Số Lượng HV hết hạn gói tập</div>
+                                            <div class="stat-text">Số lượng : @numberOfExpiredMembers </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Phần 3 -->
+                <div class="row">
+                    @{
+                        int sohoivien = @Model.hoiViens.Count();
+                        int sothanhvien = @Model.vien.Count();
+                        int tyso = (sothanhvien > 0) ? sohoivien * 100 / sothanhvien : 0;
+                    }
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card text-white bg-flat-color-6">
+                            <div class="card-body">
+                                <div class="card-left pt-1 float-left">
+                                    <h3 class="mb-0 fw-r">
+                                        <span class="count float-left">@tyso</span>
+                                        <span>%</span>
+                                    </h3>
+                                    <p class="text-light mt-1 m-0">Tỷ số chuyển đổi</p>
+                                </div>
+                                <div class="card-right float-right text-right">
+                                    <div id="flotBar1" class="flotBar1"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card text-white bg-flat-color-3">
+                            <div class="card-body">
+                                <div class="card-left pt-1 float-left">
+                                    <h3 class="mb-0 fw-r">
+                                        <span class="count">@(@Model.hoiViens.Count() + Model.vien.Count()) </span>
+                                    </h3>
+                                    <p class="text-light mt-1 m-0">Tổng KH tham gia</p>
+                                </div>
+                                <div class="card-right float-right text-right">
+                                    <i class="icon fade-5 icon-lg pe-7s-users"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card text-white bg-flat-color-2">
+                            <div class="card-body">
+                                <div class="card-left pt-1 float-left">
+                                    <h3 class="mb-0 fw-r">
+                                        <span class="count">@ViewBag.NewMembersCount</span>
+                                    </h3>
+                                    <p class="text-light mt-1 m-0">Hội viên mới</p>
+                                </div>
+                                <div class="card-right float-right text-right">
+                                    <div id="flotLine1" class="flotLine1"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="mb-3">Biểu đồ Doanh Thu Theo Tháng</h4>
+                                <canvas id="barChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.3/dist/Chart.bundle.min.js"></script>
+                    <script>
+    $(document).ready(function () {
+        // Gọi action GetDoanhThuData và vẽ biểu đồ
+        $.ajax({
+            url: '@Url.Action("DoanhThu", "Admin")',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var thang = [];
+                var doanhThu = [];
+
+                // Lấy dữ liệu từ action và đổ vào mảng thang và doanhThu
+                for (var i = 0; i < data.length; i++) {
+                    thang.push(data[i].Thang);
+                    doanhThu.push(data[i].TongDoanhThu);
+                }
+
+                // Vẽ biểu đồ
+                var ctx = document.getElementById('barChart').getContext('2d');
+                var barChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: thang,
+                        datasets: [{
+                            label: 'Doanh thu',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1,
+                            data: doanhThu
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            },
+            error: function () {
+                console.error('Đã xảy ra lỗi khi gọi action GetDoanhThuData');
+            }
+        });
+    });
+                    </script>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="mb-3">Line Chart </h4>
+                            <canvas id="lineChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Biểu đồ miền -->
+                    <div class="col-lg-6 col-xl-12">
+                        <div class="card bg-flat-color-3  ">
+                            <div class="card-body">
+                                <h4 class="card-title m-0  white-color ">December  2023</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="flotLine5" class="flot-line"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Thông báo quan trọng -->
+                <div class="alerts">
+                    <div class="row">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Thông tin quan trọng</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-success" role="alert">
+                                    <h4 class="alert-heading">Quản Lý</h4>
+                                    <hr>
+                                    <p class="mb-0">- Nắm bắt thông tin thống kê toàn hệ thống sau đó thông báo lại chủ doanh nghiệp ngay khi có thông tin sai lệch.</p>
+                                </div>
+
+                                <div class="alert alert-warning" role="alert">
+                                    <h4 class="alert-heading">Lễ Tân</h4>
+                                    <hr>
+                                    <p>- Tiếp nhận khách hàng và kiểm tra thông tin khách hàng đến tập miễn phí theo ngày cũng như lịch tập, điểm danh cho hội viên. </p>
+                                    <p class="mb-0">Chú ý: Kiểm tra căn cước công dân theo thông tin khách hàng đăng ký.</p>
+                                </div>
+
+                                <div class="alert alert-danger" role="alert">
+                                    <h4 class="alert-heading">Chăm Sóc Khách Hàng</h4>
+                                    <hr>
+                                    <p class="mb-0">- Kiểm tra thông tin khách hàng sắp và đã hết hạn để chăm sóc khách hàng tốt hơn, tiếp nhận thông tin khách hàng phàn nàn sau đó thông báo lại cho quản lý ngay.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .animated -->
+            <!-- Footer -->
+            <footer class="site-footer">
+                <div class="footer-inner bg-white">
+                    <div class="row">
+                        <div class="col-sm-6 text-left">
+                            Gmail: ChiAnh2409@gmail.com
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            Liên hệ chủ doanh nghiệp: 0388473914
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <!-- /#right-panel -->
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+        <script src="~/js/dashboard/main.js"></script>
+
+        <!-- Biểu đồ miền -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery.flot@0.8.3/jquery.flot.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flot-pie@1.0.0/src/jquery.flot.pie.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flot-spline@0.0.1/js/jquery.flot.spline.min.js"></script>
+
+        <!--  Chart js -->
+        <script src="~/js/chartjs-init.js"></script>
+        
+
+        <!-- local -->
+        <script src="~/js/dashboard/widgets.js"></script>
+        <!--Local Stuff-->
+        <script>
+            jQuery(document).ready(function ($) {
+                "use strict";
+                // Line Chart  #flotLine5
+                var newCust = [[0, 3], [1, 5], [2, 4], [3, 7], [4, 9], [5, 3], [6, 6], [7, 4], [8, 10]];
+
+                var plot = $.plot($('#flotLine5'), [{
+                    data: newCust,
+                    label: 'New Data Flow',
+                    color: '#fff'
+                }],
+                    {
+                        series: {
+                            lines: {
+                                show: true,
+                                lineColor: '#fff',
+                                lineWidth: 2
+                            },
+                            points: {
+                                show: true,
+                                fill: true,
+                                fillColor: "#ffffff",
+                                symbol: "circle",
+                                radius: 3
+                            },
+                            shadowSize: 0
+                        },
+                        points: {
+                            show: true,
+                        },
+                        legend: {
+                            show: false
+                        },
+                        grid: {
+                            show: false
+                        }
+                    });
+            });
+        </script>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,61 @@
+﻿@model QLPG.ViewModel.MultipleData
+@{
+    ViewBag.Title = "Gia hạn gói tập";
+    Layout = null;
+}
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Gia hạn gói tập</title>
+    <link href="~/css/goitap.css" rel="stylesheet" />
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="~/assets/img/favicon.ico" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Thêm thư viện jQuery -->
+</head>
+<body>
+    <div class="wrapper">
+        <div class="title">
+            Gia hạn gói tập
+        </div>
+        <form method="post" action="@Url.Action("GiaHanGoiTap", "DangkyGoiTap")">
+            <div style="color: royalblue">
+                <label>Tên Gói Tập</label>
+                <select id="goiTap" name="id_GT" style="width: 300px; height: 40px;">
+                    @foreach (var item1 in Model.chiTietDK_)
+                    {
+                        <option value="@item1.id_GT">@item1.GoiTap.TenGoiTap</option>
+                    }
+                </select>
+            </div>
+            <div style="color: royalblue">
+                <label>Tên Hội Viên</label>
+                <select id="hoiViens" name="id_HV" style="width: 300px; height: 40px;">
+                    @foreach (var item2 in Model.chiTietDK_)
+                    {
+                        <option value="@item2.id_HV">@item2.HoiVien.ThanhVien.TenTV</option>
+                    }
+                </select>
+            </div>
+            <div class="field">
+                <input type="date" name="NgayBatDau" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                <!-- Ngày bắt đầu tự động là ngày hiện tại -->
+            </div>
+            <div class="field">
+                <input type="date" name="NgayKetThuc">
+                <label>Ngày kết thúc</label>
+            </div>
+            <div class="field">
+                <input type="text" name="ThanhTien">
+                <label>Thành Tiền</label>
+            </div>
+            <div class="field">
+                <input type="submit" value="Gia hạn">
+            </div>
+            <div class="signup-link">
+                <a href="/HoiVien/HoiVien">Quay về </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
